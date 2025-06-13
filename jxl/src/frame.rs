@@ -511,7 +511,7 @@ impl Frame {
         let metadata = &decoder_state.file_header.image_metadata;
         let mut pipeline = SimpleRenderPipelineBuilder::new(
             num_channels + num_temp_channels,
-            frame_header.size_padded_upsampled(),
+            frame_header.size_upsampled(),
             frame_header.upsampling.ilog2() as usize,
             frame_header.log_group_dim(),
         );
@@ -576,7 +576,7 @@ impl Frame {
 
         if frame_header.upsampling > 1 {
             let transform_data = &decoder_state.file_header.transform_data;
-            for c in 0..3 {
+            for c in 0..num_channels {
                 pipeline = match frame_header.upsampling {
                     2 => pipeline.add_stage(Upsample2x::new(transform_data, c)),
                     4 => pipeline.add_stage(Upsample4x::new(transform_data, c)),
